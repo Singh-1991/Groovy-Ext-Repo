@@ -5,19 +5,19 @@ pipeline {
         timeout(time: 1, unit: 'HOURS')
     }    
 
-    def versionsManifest = readYaml file: 'versions_manifest.yml'
-    def s3_path = versionsManifest.version_info.ML_model.cloud_model.path
-    def tarball_name = s3_path.tokenize('/')[-1]
-
     stages {
         stage('Code CheckOut') {
             steps{
                 git branch: 'main', credentialsId: 'GitHub_Credentials', url: 'https://github.com/Singh-1991/wonames-script.git'
             }
-        }        
+        }     
+        
         stage('Get artifact') {
             steps {
               script {
+                def versionsManifest = readYaml file: 'versions_manifest.yml'
+                def s3_path = versionsManifest.version_info.ML_model.cloud_model.path
+                def tarball_name = s3_path.tokenize('/')[-1]
                 // Ensure PWD is correctly defined within the container
                 def PWD = sh(script: "echo \$(pwd)", returnStdout: true).trim()
                 // env.PWD = PWD
@@ -91,14 +91,16 @@ pipeline {
     }
 
     post {
-          stage('CleanUp Workspace') {
-            steps {
-              checkout scm // Checkout the repository into the workspace
-              // Enter the checked-out repository directory
-              dir("${env.WORKSPACE}") {
-                sh "rm -Rf *"
-              }
+        always{
+            stage('CleanUp Workspace') {
+                steps {
+                    checkout scm // Checkout the repository into the workspace
+                    // Enter the checked-out repository directory
+                    dir("${env.WORKSPACE}") {
+                        sh "rm -Rf *"
+                    }
+                }
             }
-          }
         }
+    }
 }
