@@ -24,6 +24,7 @@ pipeline {
                         export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
                     """
                     sh "aws s3 cp ${s3_path} ${PWD} --debug"
+                }
               }
             }
         }
