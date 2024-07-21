@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    options {
+        timeout(time: 1, unit: 'HOURS')
+    }    
+
     def versionsManifest = readYaml file: 'versions_manifest.yml'
     def s3_path = versionsManifest.version_info.ML_model.cloud_model.path
     def tarball_name = s3_path.tokenize('/')[-1]
@@ -84,8 +88,9 @@ pipeline {
                 }
             }
         }
+    }
 
-        post {
+    post {
           stage('CleanUp Workspace') {
             steps {
               checkout scm // Checkout the repository into the workspace
@@ -96,5 +101,4 @@ pipeline {
             }
           }
         }
-    }
 }
