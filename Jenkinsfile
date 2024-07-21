@@ -51,7 +51,7 @@ pipeline {
                     def calculatedHashes = [:]
                         
                     filesToHash.each { file ->
-                        if (!file.endsWith("/checksum.txt") && !file.endsWith(".tar")) {
+                        if (!file.endsWith("/checksum.txt") && !file.endsWith("*.tar") && !file.endsWith("*.gz")) {
                             def filename = file.tokenize('/')[-1]
                             calculatedHashes[filename] = sh(script: "sha256sum ${file} | cut -d' ' -f1", returnStdout: true).trim()
                         }
