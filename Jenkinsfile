@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    def versionsManifest = readYaml file: 'versions_manifest.yml'
+    def s3_path = versionsManifest.version_info.ML_model.cloud_model.path
+    def tarball_name = s3_path.tokenize('/')[-1]
+
     stages {
         stage('Get artifact') {
             steps {
