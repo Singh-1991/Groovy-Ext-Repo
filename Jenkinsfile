@@ -92,15 +92,8 @@ pipeline {
 
     post {
         always{
-            stage('CleanUp Workspace') {
-                steps {
-                    checkout scm // Checkout the repository into the workspace
-                    // Enter the checked-out repository directory
-                    dir("${env.WORKSPACE}") {
-                        sh "rm -Rf *"
-                    }
-                }
-            }
+            // Clean up workspace
+            deleteDir()
         }
     }
 }
