@@ -13,7 +13,12 @@ pipeline {
                 def PWD = sh(script: "echo \$(pwd)", returnStdout: true).trim()
                 // env.PWD = PWD
                 // Copy artifact from S3 to PWD
-                sh "aws s3 cp ${s3_path} ${PWD} --debug"
+                withCredentials([usernamePassword(credentialsId: 'AWS-Credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    sh """
+                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                    """
+                    sh "aws s3 cp ${s3_path} ${PWD} --debug"
               }
             }
         }
