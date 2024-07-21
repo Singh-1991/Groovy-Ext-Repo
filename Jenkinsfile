@@ -36,6 +36,9 @@ pipeline {
         stage('Validate Hash') {
             steps {
                 script {
+                    def versionsManifest = readYaml file: 'versions_manifest.yml'
+                    def s3_path = versionsManifest.version_info.ML_model.cloud_model.path
+                    def tarball_name = s3_path.tokenize('/')[-1]
                     // def PWD = env.PWD
                     // Ensure PWD is correctly defined within the container
                     def PWD = sh(script: "echo \$(pwd)", returnStdout: true).trim()
