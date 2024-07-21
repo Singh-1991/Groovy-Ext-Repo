@@ -6,6 +6,11 @@ pipeline {
     def tarball_name = s3_path.tokenize('/')[-1]
 
     stages {
+        stage('Code CheckOut') {
+            steps{
+                git branch: 'main', credentialsId: 'GitHub_Credentials', url: 'https://github.com/Singh-1991/wonames-script.git'
+            }
+        }        
         stage('Get artifact') {
             steps {
               script {
